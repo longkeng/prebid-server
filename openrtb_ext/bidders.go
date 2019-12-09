@@ -66,6 +66,7 @@ const (
 	BidderVisx             BidderName = "visx"
 	BidderTappx            BidderName = "tappx"
 	BidderEngageBDR        BidderName = "engagebdr"
+	Bidder7xbid            BidderName = "7xbid"
 )
 
 // BidderMap stores all the valid OpenRTB 2.x Bidders in the project. This map *must not* be mutated.
