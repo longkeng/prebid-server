@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "7xbid adapter params",
+    "description": "A schema which validates params accepted by the 7xbid adapter",
+
+    "type": "object",
+    "properties": {
+        "placementId": {
+            "type": "string",
+            "description": "This is placement Id"
+        },
+        "currency": {
+            "type": "string",
+            "description": "3-letter ISO 4217 code defining the currency of the bid (currently support USD and JPY), default is JPY"
+        }
+    },
+    "required": ["placementId"]
+}

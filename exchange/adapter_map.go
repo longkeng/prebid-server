@@ -2,12 +2,14 @@ package exchange
 
 import (
 	"fmt"
-	"github.com/prebid/prebid-server/adapters/kubient"
 	"net/http"
 	"strings"
 
+	"github.com/prebid/prebid-server/adapters/kubient"
+
 	"github.com/prebid/prebid-server/adapters"
 	ttx "github.com/prebid/prebid-server/adapters/33across"
+	bid7x "github.com/prebid/prebid-server/adapters/7xbid"
 	"github.com/prebid/prebid-server/adapters/adform"
 	"github.com/prebid/prebid-server/adapters/adkernel"
 	"github.com/prebid/prebid-server/adapters/adkernelAdn"
@@ -113,6 +115,7 @@ func newAdapterMap(client *http.Client, cfg *config.Configuration, infos adapter
 			cfg.Adapters[strings.ToLower(string(openrtb_ext.BidderFacebook))].PlatformID,
 			cfg.Adapters[strings.ToLower(string(openrtb_ext.BidderFacebook))].AppID,
 			cfg.Adapters[strings.ToLower(string(openrtb_ext.BidderFacebook))].AppSecret),
+		openrtb_ext.Bidder7xbid: bid7x.New7xBidBidder(cfg.Adapters[string(openrtb_ext.Bidder7xbid)].Endpoint),
 	}
 
 	legacyBidders := map[openrtb_ext.BidderName]adapters.Adapter{

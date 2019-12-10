@@ -1,12 +1,14 @@
 package usersyncers
 
 import (
-	"github.com/prebid/prebid-server/adapters/adpone"
 	"strings"
 	"text/template"
 
+	"github.com/prebid/prebid-server/adapters/adpone"
+
 	"github.com/golang/glog"
 	ttx "github.com/prebid/prebid-server/adapters/33across"
+	bid7x "github.com/prebid/prebid-server/adapters/7xbid"
 	"github.com/prebid/prebid-server/adapters/adform"
 	"github.com/prebid/prebid-server/adapters/adkernel"
 	"github.com/prebid/prebid-server/adapters/adkernelAdn"
@@ -104,6 +106,7 @@ func NewSyncerMap(cfg *config.Configuration) map[openrtb_ext.BidderName]usersync
 	insertIntoMap(cfg, syncers, openrtb_ext.BidderUnruly, unruly.NewUnrulySyncer)
 	insertIntoMap(cfg, syncers, openrtb_ext.BidderMgid, mgid.NewMgidSyncer)
 	insertIntoMap(cfg, syncers, openrtb_ext.BidderVerizonMedia, verizonmedia.NewVerizonMediaSyncer)
+	insertIntoMap(cfg, syncers, openrtb_ext.Bidder7xbid, bid7x.New7xbidSyncer)
 
 	return syncers
 }

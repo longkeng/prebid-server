@@ -117,6 +117,7 @@ var BidderMap = map[string]BidderName{
 	"tappx":             BidderTappx,
 	"engagebdr":         BidderEngageBDR,
 	"kubient":           BidderKubient,
+	"7xbid":             Bidder7xbid,
 }
 
 // BidderList returns the values of the BidderMap
