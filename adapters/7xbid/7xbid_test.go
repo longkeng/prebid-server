@@ -8,5 +8,5 @@ import (
 
 func TestJsonSamples(t *testing.T) {
 	//TODO: FIX ME
-	adapterstest.RunJSONBidderTest(t, "7xbidtest", New7xBidBidder("http://bidder.7xbid.com/api/v1/prebid/banner"))
+	adapterstest.RunJSONBidderTest(t, "7xbidtest", New7xBidBidder("http://bidder.7xbid.com/api/v1/prebid/"))
 }

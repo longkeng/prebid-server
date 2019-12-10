@@ -47,13 +47,20 @@ func (a *bid7xAdapter) makeRequest(request *openrtb.BidRequest) (*adapters.Reque
 		errs = append(errs, err)
 		return nil, errs
 	}
+	bidType := openrtb_ext.BidTypeBanner
+	for _, imp := range reqCopy.Imp {
+		if imp.Native != nil {
+			bidType = openrtb_ext.BidTypeNative
+			break
+		}
+	}
 
 	headers := http.Header{}
 	headers.Add("Content-Type", "application/json;charset=utf-8")
 
 	return &adapters.RequestData{
 		Method:  "POST",
-		Uri:     a.endpoint,
+		Uri:     a.endpoint + string(bidType),
 		Body:    reqJSON,
 		Headers: headers,
 	}, errs
