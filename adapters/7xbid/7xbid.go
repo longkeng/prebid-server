@@ -35,61 +35,62 @@ func (a *bid7xAdapter) MakeRequests(request *openrtb.BidRequest, reqInfo *adapte
 // Update the request object to include custome value
 func (a *bid7xAdapter) makeRequest(request *openrtb.BidRequest) (*adapters.RequestData, []error) {
 	var errs []error
+	err, bid7xExt := preprocess(request)
 
-	// Make a copy as we don't want to change the original request
-	reqCopy := *request
-	if err := preprocess(&reqCopy); err != nil {
-		errs = append(errs, err)
-	}
-
-	reqJSON, err := json.Marshal(reqCopy)
 	if err != nil {
 		errs = append(errs, err)
-		return nil, errs
 	}
+
 	bidType := openrtb_ext.BidTypeBanner
-	for _, imp := range reqCopy.Imp {
+	for _, imp := range request.Imp {
 		if imp.Native != nil {
 			bidType = openrtb_ext.BidTypeNative
 			break
 		}
 	}
 
+	req, _ := http.NewRequest("GET", a.endpoint+string(bidType), nil)
+	query := req.URL.Query()
+
+	query.Add("placementid", bid7xExt.PlacementId)
+
+	req.URL.RawQuery = query.Encode()
+
 	headers := http.Header{}
 	headers.Add("Content-Type", "application/json;charset=utf-8")
 
 	return &adapters.RequestData{
-		Method:  "POST",
-		Uri:     a.endpoint + string(bidType),
-		Body:    reqJSON,
+		Method:  "GET",
+		Uri:     req.URL.String(),
+		Body:    nil,
 		Headers: headers,
 	}, errs
 }
 
 // Mutate the request to get it ready to send to 7xbid
-func preprocess(request *openrtb.BidRequest) error {
+func preprocess(request *openrtb.BidRequest) (error, openrtb_ext.ExtImp7xbid) {
 	var imp = &request.Imp[0]
 	var bidderExt adapters.ExtImpBidder
+	var bid7xExt openrtb_ext.ExtImp7xbid
 	if err := json.Unmarshal(imp.Ext, &bidderExt); err != nil {
 		return &errortypes.BadInput{
 			Message: fmt.Sprintf("Missing bidder ext: %s", err.Error()),
-		}
+		}, bid7xExt
 	}
 
-	var bid7xExt openrtb_ext.ExtImp7xbid
 	if err := json.Unmarshal(bidderExt.Bidder, &bid7xExt); err != nil {
 		return &errortypes.BadInput{
 			Message: fmt.Sprintf("Cannot Resolve placementId: %s", err.Error()),
-		}
+		}, bid7xExt
 	}
 
 	if len(bid7xExt.PlacementId) < 0 {
 		return &errortypes.BadInput{
 			Message: "Invalid/Missing placementId",
-		}
+		}, bid7xExt
 	}
 
-	return nil
+	return nil, bid7xExt
 }
 
 // MakeBids make the bids for the bid response
